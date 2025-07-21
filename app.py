@@ -19,9 +19,7 @@ try:
 except LookupError:
     nltk.download('vader_lexicon', quiet=True)
 
-#Defines a custom text cleaning transformer for use in a scikit-learn pipeline.
-#Removes HTML, non-word characters, and extracts emojis.
-#Pipeline Integration: Inheriting from BaseEstimator and TransformerMixin allows this to be used in scikit-learn pipelines, making training and inference consistent.
+# IMPORTANT: TextCleaner must be defined in the global scope before loading the pickled model.
 class TextCleaner(BaseEstimator, TransformerMixin):
     def remove_html(self, text):
         return re.sub('<[^>]*>', '', text)
@@ -92,6 +90,7 @@ def generate_wordcloud_base64(text, stopwords_list=None, width=400, height=200):
 class SentimentModel:
     """Handles loading and prediction for the sentiment analysis model."""
     def __init__(self, model_path):
+        # Ensure TextCleaner is defined/imported before loading the model to avoid AttributeError during pickle.load()
         self.model = self.load_model(model_path)
 
     def load_model(self, model_path):
