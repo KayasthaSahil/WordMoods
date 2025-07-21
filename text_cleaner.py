@@ -1,5 +1,13 @@
 import re
 from sklearn.base import BaseEstimator, TransformerMixin
+from nltk.stem.porter import PorterStemmer
+from nltk.corpus import stopwords
+
+stop = stopwords.words('english')
+porter = PorterStemmer()
+
+def tokenizer_porter(text):
+    return [porter.stem(word) for word in text.split() if word not in stop]
 
 class TextCleaner(BaseEstimator, TransformerMixin):
     def remove_html(self, text):
