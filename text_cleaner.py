@@ -1,9 +1,16 @@
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
 import re
 from sklearn.base import BaseEstimator, TransformerMixin
-from nltk.stem.porter import PorterStemmer
-from nltk.corpus import stopwords
 
-stop = stopwords.words('english')
+# Ensure stopwords are available
+try:
+    stop = stopwords.words('english')
+except LookupError:
+    nltk.download('stopwords')
+    stop = stopwords.words('english')
+
 porter = PorterStemmer()
 
 def tokenizer_porter(text):
