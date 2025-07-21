@@ -27,7 +27,7 @@ class TextCleaner(BaseEstimator, TransformerMixin):
         return re.sub('<[^>]*>', '', text)
 
     def remove_non_words(self, text):
-        return re.sub('[\W]+', ' ', text.lower())
+        return re.sub(r'[\W]+', ' ', text.lower())
 
     def extract_emojis(self, text):
         emojis = re.findall(r'(?::|;|=)(?:-)?(?:\)|\(|D|P)', text)
@@ -240,7 +240,14 @@ class SentimentApp:
 #Model Path: Specifies the path to the sentiment model file.
 #App Initialization: Creates an instance of SentimentApp with the model path.
 #App Run: Runs the Flask app in debug mode.
+# For Gunicorn: expose the Flask app object at the top level
+model_path = os.path.join(os.path.dirname(__file__), 'sentiment_model.pkl')
+sentiment_app = SentimentApp(model_path)
+app = sentiment_app.app
+
 if __name__ == '__main__':
-    model_path = os.path.join(os.path.dirname(__file__), 'sentiment_model.pkl')
-    app = SentimentApp(model_path)
-    app.run(debug=True) 
+    # The original __main__ block is now handled by Gunicorn, so this will not be executed directly.
+    # If you want to run it locally for testing, you would need to set up a WSGI server.
+    # For now, we'll keep it as is, but it won't be the entry point for the app.
+    # The app object is now globally accessible as 'app'.
+    pass 
