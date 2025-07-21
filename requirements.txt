@@ -1,0 +1,6 @@
+Flask
+scikit-learn
+nltk
+wordcloud
+markupsafe
+gunicorn 
