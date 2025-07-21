@@ -12,6 +12,7 @@ import io
 import base64
 from markupsafe import Markup, escape
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from text_cleaner import TextCleaner
 
 #Ensure VADER lexicon is available at server start
 try:
@@ -20,33 +21,6 @@ except LookupError:
     nltk.download('vader_lexicon', quiet=True)
 
 # IMPORTANT: TextCleaner must be defined in the global scope before loading the pickled model.
-class TextCleaner(BaseEstimator, TransformerMixin):
-    def remove_html(self, text):
-        return re.sub('<[^>]*>', '', text)
-
-    def remove_non_words(self, text):
-        return re.sub(r'[\W]+', ' ', text.lower())
-
-    def extract_emojis(self, text):
-        emojis = re.findall(r'(?::|;|=)(?:-)?(?:\)|\(|D|P)', text)
-        return ' '.join(emojis).replace('-', '')
-
-    def preprocess(self, text):
-        text = self.remove_html(text)
-        text = self.remove_non_words(text)
-        emojis = self.extract_emojis(text)
-        return text + ' ' + emojis
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        # Accept both pandas Series and lists
-        if hasattr(X, 'apply'):
-            return X.apply(self.preprocess)
-        else:
-            return [self.preprocess(x) for x in X]
-
 
 
 nltk.download('stopwords', quiet=True)
